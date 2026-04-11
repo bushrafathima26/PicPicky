@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PicPicky | Best Album Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#207fdf",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+             font-family: 'Inter', sans-serif; 
+        }
+        .glass-card {
+            background: rgba(43, 43, 238, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(43, 43, 238, 0.1);
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(43, 43, 238, 0.3);
+            border-radius: 10px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-slate-200 font-display">
+
+<div class="flex h-screen overflow-hidden">
+
+    <aside class="w-64 flex flex-col border-r border-white/5 bg-slate-blue-950">
+        <!-- sidebar content -->
+		<div class="p-6 flex flex-col gap-8">
+		<div class="flex items-center gap-3">
+		<div class="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+		<span class="material-symbols-outlined font-bold">center_focus_strong</span>
+		</div>
+		<div>
+		<h1 class="text-lg font-extrabold tracking-tight leading-none text-white">PicPicky</h1>
+		<p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">AI Analyst</p>
+		</div>
+		</div>
+		<nav class="flex flex-col gap-1.5">
+
+		<a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="dashboard.html">
+		<span class="material-symbols-outlined">dashboard</span>
+		<span class="text-sm font-medium">Dashboard</span>
+		</a>
+		<a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="upload.html">
+		<span class="material-symbols-outlined">cloud_upload</span>
+		<span class="text-sm font-semibold">Uploads</span>
+		</a>
+		<a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="analysis.html">
+		<span class="material-symbols-outlined">analytics</span>
+		<span class="text-sm font-medium">Analysis / Results</span>
+		</a>
+		<a class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary border border-primary/20 rounded-lg transition-all" href="best-album.html">
+		<span class="material-symbols-outlined fill">stars</span>
+		<span class="text-sm font-medium">Best Album</span>
+		</a>
+		<a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="profile.html">
+		<span class="material-symbols-outlined">person_search</span>
+		<span class="text-sm font-medium">Profile / Insights</span>
+		</a>
+		</nav>
+		</div>
+		<div class="mt-auto p-6">
+		<div class="flex items-center gap-3 px-2">
+		<div class="w-8 h-8 rounded-full bg-slate-blue-800 border border-white/10 flex items-center justify-center overflow-hidden">
+		<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXj44Bsgnc6vvQ-FkLkZmnsUHs1CGSRW8j4MhbckeRUb7G6TXh3Ar0gavhnMbXpEuu9iEHHmCuvyslcDqGR0rTTRnlUDfEFrVlOMCEJe0MLWFBzbP-F253Rk-OTxMKf6CWXL4g7xGmhS8IJyTT9UmqqA5bPPjPHRS-GFt207lBRNeO-RI20PlwgkVrkvhSP2HgL2r86SPVRr1qhH0UVcsL8oHSexGa5MnuPrlbVsrBE-_gxvtK9ZZx6pNZk94TsTq1waeReRFshP4b"/>
+		</div>
+		<div class="flex-1 min-w-0">
+		<p id="profileName" class="text-xs font-bold text-white truncate"></p>
+		<p id="profileEmail" class="text-[10px] text-slate-400 truncate"></p>
+		</div>
+		<span class="material-symbols-outlined text-slate-500 text-sm cursor-pointer">settings</span>
+		</div>
+		</div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <div class="max-w-[1600px] mx-auto w-full px-8 py-10">
+            <!-- page content -->
+			<div class="flex items-center gap-4">
+			<div class="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center">
+			<span class="material-symbols-outlined filled text-primary text-3xl">stars</span>
+			</div>
+			<div>
+			<h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Best Album</h1>
+			<p class="text-slate-500 dark:text-slate-400 mt-1">AI-curated excellence</p>
+			</div>
+			</div>
+			<div class="flex items-center gap-3">
+			<br><br><br>
+			<br><br>
+			  
+			<button class="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:opacity-90 transition-all shadow-lg shadow-primary/20">
+							Export Selection
+						</button>
+			</div>
+			</header>
+			<section class="mb-20">
+			<div class="flex items-center justify-between mb-6">
+			<h3 class="text-lg font-semibold flex items-center gap-2">
+			<span class="w-2 h-2 rounded-full bg-primary"></span>
+							Master Selections
+						</h3>
+			<div class="flex gap-2">
+			<button class="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary font-medium">Top Scoring</button>
+			<button class="text-xs px-3 py-1.5 rounded-full hover:bg-primary/10 transition-colors text-slate-400">Chronological</button>
+			</div>
+			</div>
+			<div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+			<div class="masonry-item group relative rounded-xl overflow-hidden border border-white/5 bg-slate-900">
+			<img class="w-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiyAv7LL4xCPAcXTgHggIUGf_pYYNvqHiqXih4WsLc2eKRCmgiC5oZRjroNoy4hjZ-EaR28R0AHOFzyp1Tutnn5cqd3E9htjHrQ3LgFSx-OD7IhZQI6c2Xm4Ji42gRn_g8nFnxt24jsNijIA899A_TjhMJbpwQ3dVqTcX4B4wTJ-WB4jNnPnrLxjKHG_NlNIUH3eah42EYaZnyGi6yA3t_GalCol9HYFEIpTgqJ8JnEMkVYdrbP16-5uyiAac6OnZ4hkmIqfs4Tx-Q"/>
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+			<div class="absolute top-4 right-4 bg-yellow-500/90 text-white px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
+			<span class="material-symbols-outlined text-[14px] filled">grade</span> 9.8 Score
+							</div>
+			</div>
+			<div class="masonry-item group relative rounded-xl overflow-hidden border border-white/5 bg-slate-900">
+			<img class="w-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu_7bARSLgNYVH9cXFUEiG9b3Ykx9gDpk5KISBAB_mppUgDAmPZkUV_kPL8hLGn5SSz0_52fOjabw_O9xodgEVn53IDxJBE3ZmOyHTZvYge3rn9m3t6S_96xcqGnyUEaW9PKIA9xVB2zOEalf95AikFCOn5IN5b5grCOLmlZPkeFPheFzOyFjYMVg3Dt6ix-oHSmCpF3qZIpxMUjC7f4J2iXZMV-LtQ7Q5cwz5LAwTpxQ93tFogy2FrfeG0T3DPg9Yr1BUns2ETu31"/>
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+			<div class="absolute top-4 right-4 bg-yellow-500/90 text-white px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
+			<span class="material-symbols-outlined text-[14px] filled">grade</span> 9.6 Score
+							</div>
+			</div>
+			<div class="masonry-item group relative rounded-xl overflow-hidden border border-white/5 bg-slate-900">
+			<img class="w-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd--xgfOkfxOeFN8cDDD6O6p-51o_huQeI0xkYUXV3eX2YpsYwTKpyud1Wc3LpbPUmADzn-0QUH_OCJ3pTf_JfDfok_fNeBTsDOSoqDFdLbC1oxyr6Zg4rQnYTbRLIJw1JA78V6ahoPlLgpV1hL_UCV_R91mlEREjEI-1vV58PsrhiEObVe551ZEp3Bte6Kjfo5DBGmK3OTI2U6gbJAeBiw869GEqaggmZN3h3YkmshIqYMlSHdJA3YzKGx1dVBy2l8Q-cPjlnWCAm"/>
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+			<div class="absolute top-4 right-4 bg-yellow-500/90 text-white px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
+			<span class="material-symbols-outlined text-[14px] filled">grade</span> 9.5 Score
+							</div>
+			</div>
+			<div class="masonry-item group relative rounded-xl overflow-hidden border border-white/5 bg-slate-900">
+			<img class="w-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxFANqpd6ZDFczYe6rY8_gHI1TvsDAaTPlaHcsPeJkO584ntinMlLd1aJMQwgX2qvPlN79G6M600VlC4NgboBlsA1advbSvyWRs06d8tVBnfnRxi9-YG90E-TLaplD4aNWvpLf8JH6_rSVIEa9Cp9hFndGNRFr8RVGeF9Wzu9J2xMdKh6FswPO5KSJ8qMJ_Kr_hqgvb19ZNdbpYEO8XMI3EzZgjLlUk9vnTrf0BZxnHcbM8_ntyWuYJVVG742vaxJC8Z2JcNPCw8k2"/>
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+			<div class="absolute top-4 right-4 bg-yellow-500/90 text-white px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
+			<span class="material-symbols-outlined text-[14px] filled">grade</span> 9.4 Score
+							</div>
+			</div>
+			<div class="masonry-item group relative rounded-xl overflow-hidden border border-white/5 bg-slate-900">
+			<img class="w-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClT8pS-ezJSgFGiC1qE50ZdiTz21WwTABioCoFrnyUz1st8pbdhh3y85wd9g9Mw1wteat794aXz65U87JJhd_Ije2eOBTwaE8gUaI3M9R8e0iC2eXflXbqVTpduaKjRI_IPlvpBZADKV-Oj7eegiZMY83DcH79Sa5kjipJOQukY5n1DghAn2l0Oqn5eZvq7jeBynBupLoTIC-Kbx2tKE4JE8db58QoMOTTjLFkzvFcUJC31EV7dS_9v8K5He46WQdKGYjd0jxxP-zp"/>
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+			<div class="absolute top-4 right-4 bg-yellow-500/90 text-white px-2 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
+			<span class="material-symbols-outlined text-[14px] filled">grade</span> 9.4 Score
+							</div>
+			</div>
+			</div>
+			</section>
+			<div class="h-px w-full bg-gradient-to-r from-transparent via-primary/20 to-transparent mb-16"></div>
+			<section class="mb-16">
+			<div class="flex items-center gap-3 mb-8">
+			<span class="material-symbols-outlined text-slate-400">filter_none</span>
+			<h2 class="text-2xl font-bold">Duplicates Detected</h2>
+			<span class="bg-primary/20 text-primary text-xs px-2 py-1 rounded-full font-bold">12 Sets Found</span>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center">
+			<div class="flex items-center -space-x-12 shrink-0">
+			<div class="relative w-40 h-32 rounded-lg overflow-hidden border-2 border-primary/30 rotate-[-2deg] z-10 shadow-xl">
+			<img class="w-full h-full object-cover grayscale-[0.2]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBldnBrYbk5Wzb5UQlhQSDJbJkAtovjVzDv-ToVRJXO6jngeBSkBEEHgiUjFDABM_eyoveOkqso41FdJlUuymPFCFnVYY1ng0q1q1JDC030rBm1G2-0ZSWLhcMkilVRj588gpx8nPtR2MI8pO7qVpma4oiK9ppJSOTrx01VrvE9Ok7F5JcFv0SzQPZTmOO4qARLh-swyXWC4FMDTt2yofnir8DZ04dks5uXmAsPaKrITY9HFYxCv6w_W7OFSvAtSPcPLM-D6_5jCDyJ"/>
+			</div>
+			<div class="relative w-40 h-32 rounded-lg overflow-hidden border-2 border-white/10 rotate-[2deg] z-0 opacity-80">
+			<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrETakZ429HUvc7Wa_r4k10DlLVgDWHqFsVIcCOuhrpq0q30kOyDGvygpl0HVRori7DaxICaCVS3P3VgN39_Doo34Od4U_nroaADK8g1EztBhld3x8-JW2QFeS7wla1wORmDUeJu9nxNxVp5OAQz9ba_sHg_A62gUTmxN0TTZq90t22CfnoyYvwGYe8v2uL6pGkkmwt-7fq6lk92ePk9Be-PPM2ppaUxnfIrZ_OatwiKm3S1QvpJy13y8FL52HTOx7sROHjIehKqIH"/>
+			</div>
+			</div>
+			<div class="flex-1">
+			<div class="flex items-center gap-2 mb-2">
+			<span class="text-xs font-bold text-primary px-2 py-0.5 rounded bg-primary/10">99% MATCH</span>
+			<span class="text-xs text-slate-400">Burst Sequence</span>
+			</div>
+			<h4 class="font-bold text-white mb-4">Gear Detail #204</h4>
+			<div class="flex gap-2">
+			<button class="flex-1 py-2 rounded-lg bg-primary/20 text-primary text-xs font-bold hover:bg-primary/30 transition-all">Compare</button>
+			<button class="flex-1 py-2 rounded-lg border border-slate-700 text-slate-400 text-xs font-bold hover:border-slate-500 transition-all">Keep Best</button>
+			</div>
+			</div>
+			</div>
+			<div class="glass-card rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center">
+			<div class="flex items-center -space-x-12 shrink-0">
+			<div class="relative w-40 h-32 rounded-lg overflow-hidden border-2 border-primary/30 rotate-[-2deg] z-10 shadow-xl">
+			<img class="w-full h-full object-cover grayscale-[0.2]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBghBjitoYwn7nJPS-_QrviJB1xICMSMn7BaaodcjB9Iuf69Lb6vhXAbVQSHQD62bfSkH-akv0n57wKMLyZrQMptOMm6KqTsjjABgIm1nRFQyvZzJF5Fyh-4PbVhy15xbfZVyiva_JnpsRP5LBg1aWzZQspSgoLKll3lvSLbr6LkkWHJLMha56ipscCLyVH0VIup713ytvyDJ_RDMz_C_YY6PiNVMH_m7d9L4Z21WMzVJKwd_WZa7ABIDWNvsVOJ5_0jdzy8aQRVBZ3"/>
+			</div>
+			<div class="relative w-40 h-32 rounded-lg overflow-hidden border-2 border-white/10 rotate-[2deg] z-0 opacity-80">
+			<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_1Oa8Emy3QVzintNk7JLufbzSFfLfb1_TPAVUepvnNAgteD2-GSjKZpHpwV9W645XOeiVOvO0SR3y2TydiDMmKYkYcT0-Y2tPXVtY342U92S5RULElxppnTMzrIlVUqPcgeuxsE3i8mcqrphfjVw6Kozyhe_ewguA8UCRl6HT6K6XvjouT7X-o54SOg1OiBXTad39cnIWDHUtEkDtD7i9hguk7CP_sKxSvTKm-bXn9z76RltpwI3c9Eso1GAk49nu1lO9uUhoL1xz"/>
+			</div>
+			</div>
+			<div class="flex-1">
+			<div class="flex items-center gap-2 mb-2">
+			<span class="text-xs font-bold text-primary px-2 py-0.5 rounded bg-primary/10">98% MATCH</span>
+			<span class="text-xs text-slate-400">Similar Composition</span>
+			</div>
+			<h4 class="font-bold text-white mb-4">Urban Lines #11</h4>
+			<div class="flex gap-2">
+			<button class="flex-1 py-2 rounded-lg bg-primary/20 text-primary text-xs font-bold hover:bg-primary/30 transition-all">Compare</button>
+			<button class="flex-1 py-2 rounded-lg border border-slate-700 text-slate-400 text-xs font-bold hover:border-slate-500 transition-all">Keep Best</button>
+			</div>
+			</div>
+			</div>
+			</div>
+			</section>
+			<section>
+			<div class="flex items-center gap-3 mb-8">
+			<span class="material-symbols-outlined text-slate-500">warning</span>
+			<h2 class="text-2xl font-bold text-slate-400">Blurry or Low-Quality</h2>
+			<span class="bg-slate-700/50 text-slate-400 text-xs px-2 py-1 rounded-full font-bold">8 Flags</span>
+			</div>
+			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+			<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-800/50 border border-slate-800 hover:border-slate-700 transition-colors">
+			<img class="w-full h-full object-cover opacity-50 blur-[2px] group-hover:blur-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-gI1zQksre8eAW8T_L_SnF2wGNkZp70LNWTgkY_RJpXRNhTte62U36GsOR9PiwYcfm6drNk4dpsR1-k2cluyShXk9wpHqBhkw8LoMZeb0xM6UYnn4fFRg-XJ_GvNDbL_az-r10Y9JO8CAUhyFZZ9R7bMoSttalRvrMX7DB5ZRAKJE3muzgAGO6sywcYAsPMqgNkT9-YG8OohltJGwNK8mQMzoJvEsVll5RGTUVuoItAv7inSNagv4h9UxNbv91c9mSL8XybZZikzK"/>
+			<div class="absolute inset-0 flex flex-col items-center justify-end p-4">
+			<div class="w-full bg-slate-900/90 rounded-lg p-2 backdrop-blur-sm">
+			<span class="text-[10px] text-slate-400 font-bold tracking-tight block">ISSUE DETECTED</span>
+			<span class="text-xs text-white">Motion Blur</span>
+			</div>
+			</div>
+			</div>
+			<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-800/50 border border-slate-800 hover:border-slate-700 transition-colors">
+			<img class="w-full h-full object-cover opacity-50 contrast-[0.8] group-hover:contrast-100 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOhJaoor1VHZL3BJ_w0Qr-ulbk8PXC4SL5MVawYp0Zh6SSYyuQe3tN0YWKq140VnU5D8_3JoxSfzs9Tp4vvav1AgVh4r2gCzICHZGJOLA1R8dkfNc95FUGYBqVDYYP7keAbOkqoXFfRY3SbouALJxQ7odJf4WdTkSFhQjUdEa-wOe4q7zydtZgUaMGLiek4lsB3JFk5p6YxBNrNR_rhbo0JoUjE9R2C-Fdwh4btmXwxVvSpiM5fqINwPdi6kPDJ6xCoU5B5TOMztQW"/>
+			<div class="absolute inset-0 flex flex-col items-center justify-end p-4">
+			<div class="w-full bg-slate-900/90 rounded-lg p-2 backdrop-blur-sm">
+			<span class="text-[10px] text-slate-400 font-bold tracking-tight block">ISSUE DETECTED</span>
+			<span class="text-xs text-white">Exposure Issue</span>
+			</div>
+			</div>
+			</div>
+			<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-800/50 border border-slate-800 hover:border-slate-700 transition-colors">
+			<img class="w-full h-full object-cover opacity-50 blur-[1px] group-hover:blur-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFa2DztRNAxFy5PB62kUJRfrTWflpA4PYqDJYBbt-XF3zs5xwKFDE68F4I325D2tHOLj2PD_oSE5YfWUYUm79J74MkchfaV8vBoGx71auhmE9pAJ-QHilJQvsX1ZeFOv-EIxRuO3MeNeSlYSXVZIP50WXsrpwFEkEJl3UZMnIFHbXklFrhBZEkHPpB_1W9SQbjp4XZFKwsLmIDgTXzcG-J3T3m5Z0lmoNcpHTTjDdqebaIjnLcGpAcImILeIX6MxYS4vhOILCthZBH"/>
+			<div class="absolute inset-0 flex flex-col items-center justify-end p-4">
+			<div class="w-full bg-slate-900/90 rounded-lg p-2 backdrop-blur-sm">
+			<span class="text-[10px] text-slate-400 font-bold tracking-tight block">ISSUE DETECTED</span>
+			<span class="text-xs text-white">Low Sharpness</span>
+			</div>
+			</div>
+			</div>
+			<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-800/50 border border-slate-800 hover:border-slate-700 transition-colors">
+			<img class="w-full h-full object-cover opacity-50 saturate-[0.5] group-hover:saturate-100 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF-3M-Gv4k6pJXpPwk4WwvBBjCNhftTZ3-RfK6AmROpKmpARpG_KD21Z2OdLv_UYKe8O1uh5uIB-9ZzuoMBWLQ-OuSz-MZKi3VYI740KosEbpvzkUbR-HKeoon61mJZyHU3AP1F_sfg_4IMJAdZLZpz8NJ01x9CfD3NR4E7Vr8_zbLq3KX82t0QZ_bono0Dzx8lFyc-fez_kgGy1AMqwhGxLREfjVzmffCX5KUKINnc1OS_-hxLYecEFtiI5W2rfpdibwA8RA-veSK"/>
+			<div class="absolute inset-0 flex flex-col items-center justify-end p-4">
+			<div class="w-full bg-slate-900/90 rounded-lg p-2 backdrop-blur-sm">
+			<span class="text-[10px] text-slate-400 font-bold tracking-tight block">ISSUE DETECTED</span>
+			<span class="text-xs text-white">High Sensor Noise</span>
+			</div>
+			</div>
+			</div>
+			<div class="group relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-800/50 border border-slate-800 hover:border-slate-700 transition-colors">
+			<img class="w-full h-full object-cover opacity-50 blur-[3px] group-hover:blur-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxHoSFpKF4oUUrcf9G62xG2Ihqq_GC3TLSo0wtDxQlb8kBYvrjlI1YXTf3K3pxX-ibOuQC_1VgoZY-umbhsUAGAN_IgaU8zj3HUG9fRnjsCb8h9OZftlZmWVG1LQocvkAbKqGtQneIDqA0M9-Fr_82iThQcvcew4wytyWoBfA1OhdDeUF8ko6szip-D1K17T_b62ML-k9Nl-qSfKnigOXeg20S4pVCkxko0gVHESJaz7-DXiqtPab2AM7-HWF7D0hkGbQ5I--id9xm"/>
+			<div class="absolute inset-0 flex flex-col items-center justify-end p-4">
+			<div class="w-full bg-slate-900/90 rounded-lg p-2 backdrop-blur-sm">
+			<span class="text-[10px] text-slate-400 font-bold tracking-tight block">ISSUE DETECTED</span>
+			<span class="text-xs text-white">Focus Fail</span>
+			</div>
+			</div>
+			</div>
+			<div class="group relative aspect-[4/5] rounded-xl border border-dashed border-slate-800 flex flex-col items-center justify-center p-4 hover:bg-slate-800/20 transition-all cursor-pointer">
+			<span class="material-symbols-outlined text-slate-700 text-3xl mb-2">add_circle</span>
+			<span class="text-[10px] text-slate-600 font-bold text-center">MANUALLY FLAG OTHERS</span>
+			</div>
+			</div>
+			</section>
+			<footer class="mt-24 pt-8 border-t border-primary/5 flex items-center justify-between text-slate-500 text-sm">
+			<div class="flex gap-8">
+			<div class="flex flex-col">
+			<span class="text-[10px] font-bold tracking-widest text-slate-600 uppercase">Processing Engine</span>
+			<span class="font-medium text-primary">PicPicky v2.4 Intelligence</span>
+			</div>
+			<div class="flex flex-col">
+			<span class="text-[10px] font-bold tracking-widest text-slate-600 uppercase">Analysis Time</span>
+			<span class="font-medium">1.4s for 156 images</span>
+			</div>
+			</div>
+			<div class="flex items-center gap-4">
+			<p>© 2024 PicPicky Professional. All rights reserved.</p>
+			<div class="flex gap-2">
+			<span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-colors cursor-pointer">
+			<span class="material-symbols-outlined text-lg">help</span>
+			</span>
+			<span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-colors cursor-pointer">
+			<span class="material-symbols-outlined text-lg">settings</span>
+			</span>
+			</div>
+			</div>
+			</footer>
+			</div>
+        </div>
+    </main>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const userName = localStorage.getItem("userName");
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (!userName || !userEmail) {
+        // Not logged in → force back to login
+        window.location.href = "login.html";
+        return;
+    }
+
+    document.getElementById("profileName").textContent = userName;
+    document.getElementById("profileEmail").textContent = userEmail;
+});
+</script>
+</body></html>
