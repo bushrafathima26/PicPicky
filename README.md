@@ -2,7 +2,7 @@
 
 PicPicky is a web application that analyzes uploaded photos for technical and aesthetic quality, detects duplicates, and builds a profiling system for photographers based on their submission history.
 
-Built as a Final Year Project (BCA) — Backend & ML pipeline by [Bushra Fathima](https://github.com/bushrafathima26).
+Built as a Final Year Project (BCA) — Backend & ML pipeline by [Bushra Fathima](https://github.com/bushrafathima26)
 
 ---
 
@@ -25,7 +25,7 @@ Built as a Final Year Project (BCA) — Backend & ML pipeline by [Bushra Fathima
 | Backend | FastAPI (Python) |
 | Database | MongoDB Atlas |
 | Image Storage | Cloudinary |
-| ML Models | PyTorch, CLIP-IQA, MANIQA |
+| ML Models | PyTorch, CLIP-IQA |
 | Auth | JWT / Session-based |
 | Frontend | HTML, CSS, JavaScript |
 
@@ -130,17 +130,10 @@ Technical Quality Analysis
 (Exposure · Noise · Sharpness · Color)
      │
      ▼
-Aesthetic Score (MANIQA / CLIP-IQA)
+Aesthetic Score (CLIP-IQA)
      │
      ▼
-Composite Score → Photographer Profile Update
-```
-
----
-
-## 📊 Demo Setup (Google Colab + ngrok)
-
-For demo day, the ML inference runs on Google Colab (GPU) exposed via ngrok tunnel, while the FastAPI backend communicates with it over HTTP.
+Composite Score → Photographer Profile Update```
 
 ---
 
