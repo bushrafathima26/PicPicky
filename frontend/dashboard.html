@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PicPicky - Dashboard Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#207fdf",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-active {
+            background-color: rgba(32, 127, 223, 0.1);
+            color: #207fdf;
+            border-left: 2px solid #207fdf;
+        }.sidebar-item-active {
+            background-color: rgba(32, 127, 223, 0.1);
+            color: #207fdf;
+        }
+        .gauge-ring {
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 45.2;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-slate-200 font-display">
+
+<div class="flex h-screen overflow-hidden">
+
+    <aside class="w-64 flex flex-col border-r border-white/5 bg-slate-blue-950">
+        <!-- sidebar content -->
+		<div class="p-6 flex flex-col gap-8">
+		<div class="flex items-center gap-3">
+		<div class="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+		<span class="material-symbols-outlined font-bold">center_focus_strong</span>
+		</div>
+		<div>
+		<h1 class="text-lg font-extrabold tracking-tight leading-none text-white">PicPicky</h1>
+		<p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">AI Analyst</p>
+		</div>
+		</div>
+		<nav class="flex flex-col gap-1.5">
+		 
+		<a class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary border border-primary/20 rounded-lg transition-all" href="dashboard.html">
+		<span class="material-symbols-outlined fill">dashboard</span>
+		<span class="text-sm font-semibold">Dashboard</span>
+		</a>
+		 <a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="upload.html">
+		<span class="material-symbols-outlined">cloud_upload</span>
+		<span class="text-sm font-medium">Uploads</span>
+		</a>
+		<a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="analysis.html">
+		<span class="material-symbols-outlined">analytics</span>
+		<span class="text-sm font-medium">Analysis / Results</span>
+		</a>
+		<a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="best-album.html">
+		<span class="material-symbols-outlined">stars</span>
+		<span class="text-sm font-medium">Best Album</span>
+		</a>
+		<a class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-all group" href="profile.html">
+		<span class="material-symbols-outlined">person_search</span>
+		<span class="text-sm font-medium">Profile / Insights</span>
+		</a>
+		</nav>
+		</div>
+		<div class="mt-auto p-6">
+		<div class="flex items-center gap-3 px-2">
+		<div class="w-8 h-8 rounded-full bg-slate-blue-800 border border-white/10 flex items-center justify-center overflow-hidden">
+		<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXj44Bsgnc6vvQ-FkLkZmnsUHs1CGSRW8j4MhbckeRUb7G6TXh3Ar0gavhnMbXpEuu9iEHHmCuvyslcDqGR0rTTRnlUDfEFrVlOMCEJe0MLWFBzbP-F253Rk-OTxMKf6CWXL4g7xGmhS8IJyTT9UmqqA5bPPjPHRS-GFt207lBRNeO-RI20PlwgkVrkvhSP2HgL2r86SPVRr1qhH0UVcsL8oHSexGa5MnuPrlbVsrBE-_gxvtK9ZZx6pNZk94TsTq1waeReRFshP4b"/>
+		</div>
+		<div class="flex-1 min-w-0">
+		<p id="profileName" class="text-xs font-bold text-white truncate"></p>
+		<p id="profileEmail" class="text-[10px] text-slate-400 truncate"></p>
+		</div>
+		<span class="material-symbols-outlined text-slate-500 text-sm cursor-pointer">settings</span>
+		</div>
+		</div>
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <div class="max-w-[1600px] mx-auto w-full px-8 py-10">
+            <!-- page content -->
+			<div class="flex items-center flex-1 max-w-md">
+			<div class="relative w-full">
+			<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg leading-none">search</span>
+			<input class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-1 focus:ring-primary/30 transition-all outline-none" placeholder="Search quality metrics..." type="text"/>
+			</div>
+			</div>
+			<div class="flex items-center gap-2">
+			 
+			</header>
+			<div class="p-8 max-w-7xl mx-auto w-full space-y-8">
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
+			<div class="flex flex-col gap-2">
+			<h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Quality Analysis Overview</h2>
+			<p class="text-slate-500 dark:text-slate-400 font-medium">Real-time visual performance data. Your composition accuracy has peaked this month.</p>
+			</div>
+			<div class="flex justify-center">
+			<div class="relative w-48 h-48 flex items-center justify-center">
+			<svg class="w-full h-full">
+			<circle class="text-slate-100 dark:text-slate-800" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="8"></circle>
+			<circle class="gauge-ring" cx="96" cy="96" fill="transparent" r="80" stroke="url(#gradient)" stroke-linecap="round" stroke-width="12"></circle>
+			<defs>
+			<linearGradient id="gradient" x1="0%" x2="100%" y1="0%">
+			<stop offset="0%" stop-color="#207fdf"></stop>
+			<stop offset="100%" stop-color="#60a5fa"></stop>
+			</linearGradient>
+			</defs>
+			</svg>
+			<div class="absolute inset-0 flex flex-col items-center justify-center">
+			<span class="text-5xl font-black tracking-tighter">82</span>
+			<span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Global Score</span>
+			</div>
+			</div>
+			</div>
+			<div class="bg-primary/5 border border-primary/20 rounded-xl p-6">
+			<div class="flex items-center gap-3 mb-4">
+			<span class="material-symbols-outlined text-primary">psychology</span>
+			<h4 class="font-bold">Profiling Note</h4>
+			</div>
+			<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">System identifies a strong preference for high-contrast textures. Your "Best Album" selection rate is optimized for street photography styles.</p>
+			</div>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+			<div class="flex justify-between items-center mb-6">
+			<h3 class="text-lg font-bold">Technical Quality</h3>
+			<div class="text-emerald-500 flex items-center text-sm font-bold bg-emerald-500/10 px-3 py-1 rounded-full">
+			<span class="material-symbols-outlined text-base mr-1 !font-bold">trending_up</span> 4.2%
+									</div>
+			</div>
+			<div class="space-y-4">
+			<div>
+			<div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
+			<span>Sharpness</span>
+			<span>88%</span>
+			</div>
+			<div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-primary" style="width: 88%"></div>
+			</div>
+			</div>
+			<div>
+			<div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
+			<span>Exposure Accuracy</span>
+			<span>94%</span>
+			</div>
+			<div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-primary" style="width: 94%"></div>
+			</div>
+			</div>
+			<div>
+			<div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
+			<span>Noise Control</span>
+			<span>65%</span>
+			</div>
+			<div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-amber-500" style="width: 65%"></div>
+			</div>
+			</div>
+			</div>
+			</div>
+			<div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+			<div class="flex justify-between items-center mb-6">
+			<h3 class="text-lg font-bold">Aesthetic Score</h3>
+			<div class="text-emerald-500 flex items-center text-sm font-bold bg-emerald-500/10 px-3 py-1 rounded-full">
+			<span class="material-symbols-outlined text-base mr-1 !font-bold">trending_up</span> 1.8%
+									</div>
+			</div>
+			<div class="space-y-4">
+			<div>
+			<div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
+			<span>Composition Balance</span>
+			<span>76%</span>
+			</div>
+			<div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-primary" style="width: 76%"></div>
+			</div>
+			</div>
+			<div>
+			<div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
+			<span>Symmetry &amp; Pattern</span>
+			<span>82%</span>
+			</div>
+			<div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-primary" style="width: 82%"></div>
+			</div>
+			</div>
+			<div>
+			<div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
+			<span>Texture Detail</span>
+			<span>91%</span>
+			</div>
+			<div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-primary" style="width: 91%"></div>
+			</div>
+			</div>
+			</div>
+			</div>
+			</div>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+			<div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+			<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Uploads</p>
+			<h3 class="text-2xl font-bold mt-1">45,203</h3>
+			</div>
+			<div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+			<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Images Analysed</p>
+			<h3 class="text-2xl font-bold mt-1">44,891</h3>
+			</div>
+			<div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+			<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Best Album Selection Rate</p>
+			<div class="flex items-end gap-2">
+			<h3 class="text-2xl font-bold mt-1">38%</h3>
+			<span class="text-xs text-primary font-bold mb-1">(+2% vs avg)</span>
+			</div>
+			</div>
+			</div>
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+			<div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+			<h3 class="text-xl font-bold mb-6">Quality Trend Over Time</h3>
+			<div class="flex-1 min-h-[200px] w-full mt-2">
+			<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 40">
+			<path d="M0,35 Q10,32 20,33 T40,25 T60,20 T80,15 T100,5" fill="none" stroke="#207fdf" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+			<path d="M0,35 Q10,32 20,33 T40,25 T60,20 T80,15 T100,5 L100,40 L0,40 Z" fill="url(#trendGrad)"></path>
+			<defs>
+			<linearGradient id="trendGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#207fdf;stop-opacity:0.2"></stop>
+			<stop offset="100%" style="stop-color:#207fdf;stop-opacity:0"></stop>
+			</linearGradient>
+			</defs>
+			</svg>
+			</div>
+			<div class="flex justify-between mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">
+			<span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span>
+			</div>
+			</div>
+			<div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+			<h3 class="text-xl font-bold mb-6">Common Issues Detected</h3>
+			<div class="space-y-6">
+			<div class="flex items-center gap-4">
+			<span class="w-24 text-xs font-bold text-slate-500 uppercase">Blurry</span>
+			<div class="flex-1 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-red-400" style="width: 12%"></div>
+			</div>
+			<span class="w-8 text-xs font-bold">12%</span>
+			</div>
+			<div class="flex items-center gap-4">
+			<span class="w-24 text-xs font-bold text-slate-500 uppercase">Exposure</span>
+			<div class="flex-1 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-amber-400" style="width: 28%"></div>
+			</div>
+			<span class="w-8 text-xs font-bold">28%</span>
+			</div>
+			<div class="flex items-center gap-4">
+			<span class="w-24 text-xs font-bold text-slate-500 uppercase">Focus Miss</span>
+			<div class="flex-1 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-amber-400" style="width: 18%"></div>
+			</div>
+			<span class="w-8 text-xs font-bold">18%</span>
+			</div>
+			<div class="flex items-center gap-4">
+			<span class="w-24 text-xs font-bold text-slate-500 uppercase">Compression</span>
+			<div class="flex-1 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+			<div class="h-full bg-primary/40" style="width: 5%"></div>
+			</div>
+			<span class="w-8 text-xs font-bold">5%</span>
+			</div>
+			</div>
+			</div>
+			</div>
+			<div class="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl p-8">
+			<div class="flex flex-col md:flex-row gap-8">
+			<div class="flex-1 space-y-6">
+			<div class="flex items-center gap-3">
+			<span class="material-symbols-outlined text-primary !font-normal">portrait</span>
+			<h3 class="text-xl font-bold">Photographer Profile Snapshot</h3>
+			</div>
+			<div class="grid grid-cols-2 gap-4">
+			<div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800/50">
+			<p class="text-xs font-bold text-slate-500 uppercase mb-2">Preferred Lighting</p>
+			<p class="text-lg font-bold">Golden Hour / Backlit</p>
+			<p class="text-xs text-slate-400 mt-1">Found in 62% of top-rated shots</p>
+			</div>
+			<div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800/50">
+			<p class="text-xs font-bold text-slate-500 uppercase mb-2">Subject Preference</p>
+			<p class="text-lg font-bold">Close-up Portraits</p>
+			<p class="text-xs text-slate-400 mt-1">High focus accuracy (96%)</p>
+			</div>
+			</div>
+			</div>
+			<div class="w-full md:w-64 flex flex-col items-center gap-4">
+			<p class="text-xs font-bold text-slate-500 uppercase w-full">Dominant Color Tones</p>
+			<div class="flex w-full h-16 rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800">
+			<div class="flex-1 h-full bg-[#E5BA73]"></div>
+			<div class="flex-1 h-full bg-[#C58940]"></div>
+			<div class="flex-1 h-full bg-[#FAF8F1]"></div>
+			<div class="flex-1 h-full bg-[#413F42]"></div>
+			</div>
+			<div class="flex justify-between w-full text-[10px] text-slate-500 font-bold uppercase">
+			<span>Warm Earth</span>
+			<span>Charcoal</span>
+			</div>
+			</div>
+			</div>
+			</div>
+			</div>	
+            </div>
+    </main>
+
+</div>
+ 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const currentPage = window.location.pathname.split("/").pop();
+    const links = document.querySelectorAll("nav a");
+
+    links.forEach(link => {
+        if (link.getAttribute("href") === currentPage) {
+            link.classList.add(
+                "bg-primary/10",
+                "text-primary",
+                "border",
+                "border-primary/20"
+            );
+
+            // Optional: make icon filled
+            const icon = link.querySelector(".material-symbols-outlined");
+            if (icon) {
+                icon.style.fontVariationSettings = "'FILL' 1";
+            }
+        }
+    });
+});
+ 
+document.addEventListener("DOMContentLoaded", function () {
+    const userName = localStorage.getItem("userName");
+    const userEmail = localStorage.getItem("userEmail");
+
+    if (!userName) {
+        window.location.href = "login.html";
+    } else {
+        document.getElementById("profileName").textContent = userName;
+        document.getElementById("profileEmail").textContent = userEmail;
+    }
+});
+ 
+</script>
+</body></html>
+ 
