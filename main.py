@@ -5,6 +5,7 @@ from config import CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SEC
 from database import db
 from routes.auth import router as auth_router
 from routes.upload import router as upload_router
+from routes.admin import router as admin_router  # ← NEW
 
 app = FastAPI(
     title="Image Quality Assessment API",
@@ -14,7 +15,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,8 +31,8 @@ cloudinary.config(
 )
 
 app.include_router(auth_router)
-
 app.include_router(upload_router)
+app.include_router(admin_router)  # ← NEW
 
 @app.get("/")
 def home():
