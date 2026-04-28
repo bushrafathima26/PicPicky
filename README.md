@@ -34,36 +34,47 @@ Built as a Final Year Project (BCA) — Backend & ML pipeline by [Bushra Fathima
 ## 📁 Project Structure
 
 ```
-image-quality-assessment/
+PicPicky/
 │
 ├── main.py                  # FastAPI app entry point
 ├── config.py                # Environment & configuration
-├── database.py              # MongoDB Atlas connection
+├── database.py              # Database connection setup
 ├── requirements.txt         # Python dependencies
+├── test.py                  # Testing script
+├── README.md                # Project documentation
 │
 ├── models/
-│   └── user.py              # User data model
+│   └── user.py              # User schema/model
 │
 ├── routes/
-│   ├── auth.py              # Login / Register endpoints
-│   └── upload.py            # Image upload & analysis endpoints
+│   ├── auth.py              # Authentication (login/register)
+│   ├── upload.py            # Image upload & processing routes
+│   ├── admin.py             # Admin-related endpoints
 │
 ├── services/
-│   ├── blur_detection.py        # Laplacian-based blur scoring
-│   ├── duplicate_detection.py   # Perceptual hash duplicate check
-│   ├── technical_quality.py     # Exposure, noise, sharpness analysis
-│   ├── clipiqa_scorer.py        # CLIP-IQA aesthetic scoring
-│   └── explainability.py        # Score explanation generation
+│   ├── blur_detection.py        # Blur detection logic
+│   ├── duplicate_detection.py   # Duplicate image detection
+│   ├── technical_quality.py     # Technical quality analysis
+│   ├── clipiqa_scorer.py        # Aesthetic scoring (CLIP-IQA)
+│   └── explainability.py        # Score explanations
 │
-└── frontend/
-    ├── login.html
-    ├── register.html
-    ├── dashboard.html
-    ├── upload.html
-    ├── analysis.html
-    ├── profile.html
-    ├── best-album.html
-    └── sidebar.html
+├── frontend/
+│   ├── login.html
+│   ├── register.html
+│   ├── dashboard.html
+│   ├── upload.html
+│   ├── analysis.html
+│   ├── profile.html
+│   ├── best-album.html
+│   ├── sidebar.html
+│   ├── admin.html
+│   ├── admin-auth.js
+│   ├── admin-functions.js
+│   ├── forgot_pass.html
+│   └── reset-password.html
+│
+├── venv/                    # Virtual environment (ignored in Git)
+└── .env                     # Environment variables (ignored in Git)
 ```
 
 ---
