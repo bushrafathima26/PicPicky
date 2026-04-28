@@ -11,29 +11,88 @@ from services.technical_quality import analyze_technical_quality
 from services.clipiqa_scorer import predict_aesthetic_score
 from services.explainability import generate_explanation
 
+from PIL import Image
+import io
+import pillow_heif
+
 router = APIRouter()
 
+
+# ✅ Helper: Convert & Compress any image to JPEG under 10MB
+def process_image(contents, filename):
+    filename_lower = filename.lower()
+    
+    try:
+        # Handle HEIC/HEIF
+        if filename_lower.endswith(('.heic', '.heif')):
+            heif_file = pillow_heif.read_heif(io.BytesIO(contents))
+            pil_image = Image.frombytes(
+                heif_file.mode,
+                heif_file.size,
+                heif_file.data,
+                "raw",
+                heif_file.mode,
+                heif_file.stride,
+            )
+        else:
+            pil_image = Image.open(io.BytesIO(contents))
+        
+        # Convert to RGB
+        if pil_image.mode != 'RGB':
+            pil_image = pil_image.convert('RGB')
+        
+        # Resize if very large
+        max_dimension = 4096
+        if max(pil_image.size) > max_dimension:
+            pil_image.thumbnail((max_dimension, max_dimension), Image.LANCZOS)
+        
+        # Compress to JPEG - reduce quality until under 10MB
+        quality = 90
+        while quality >= 30:
+            output_buffer = io.BytesIO()
+            pil_image.save(output_buffer, format="JPEG", quality=quality)
+            processed_bytes = output_buffer.getvalue()
+            
+            if len(processed_bytes) < 10 * 1024 * 1024:
+                return processed_bytes
+            
+            quality -= 10
+        
+        return processed_bytes
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to process image: {str(e)}")
+
+
+# ✅ UPLOAD ROUTE
 @router.post("/upload")
 async def upload_images(
     file: UploadFile = File(...),
     current_user: dict = Depends(verify_token)
 ):
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail=f"{file.filename} is not an image!")
+    allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'}
+    filename_lower = file.filename.lower()
+    is_image = file.content_type.startswith("image/") or any(filename_lower.endswith(ext) for ext in allowed_extensions)
+
+    if not is_image:
+        raise HTTPException(status_code=400, detail=f"{file.filename} is not a supported image format!")
 
     contents = await file.read()
+    
+    # Process & compress image
+    processed_contents = process_image(contents, file.filename)
 
-    blur_result = detect_blur(contents)
-    technical_result = analyze_technical_quality(contents)
-    aesthetic_result = predict_aesthetic_score(contents)
+    # ML Pipeline
+    blur_result = detect_blur(processed_contents)
+    technical_result = analyze_technical_quality(processed_contents)
+    aesthetic_result = predict_aesthetic_score(processed_contents)
 
     existing_hashes = list(db.images.find(
         {"user_email": current_user["email"]},
         {"filename": 1, "phash": 1, "_id": 0}
     ))
-    duplicate_result = check_duplicate(contents, existing_hashes)
+    duplicate_result = check_duplicate(processed_contents, existing_hashes)
 
-    # Generate explanation
     explanation = generate_explanation({
         "sharpness": technical_result["sharpness"],
         "exposure_accuracy": technical_result["exposure_accuracy"],
@@ -44,8 +103,9 @@ async def upload_images(
         "aesthetic_score": aesthetic_result["aesthetic_score"]
     })
 
+    # Upload compressed image to Cloudinary
     result = cloudinary.uploader.upload(
-        contents,
+        processed_contents,
         folder="picpicky/uploads",
         resource_type="image"
     )
@@ -98,4 +158,173 @@ async def upload_images(
         "strengths": explanation["strengths"],
         "issues": explanation["issues"],
         "suggestions": explanation["suggestions"]
+    }
+
+
+# ✅ DASHBOARD ROUTE
+@router.get("/dashboard")
+async def get_dashboard(current_user: dict = Depends(verify_token)):
+    user_email = current_user["email"]
+    
+    total_images = db.images.count_documents({"user_email": user_email})
+    
+    blurry_images = db.images.count_documents({
+        "user_email": user_email,
+        "is_blurry": True
+    })
+    
+    duplicate_images = db.images.count_documents({
+        "user_email": user_email,
+        "is_duplicate": True
+    })
+    
+    pipeline = [
+        {"$match": {"user_email": user_email}},
+        {"$group": {
+            "_id": None,
+            "avg_technical": {"$avg": "$technical_score"},
+            "avg_aesthetic": {"$avg": "$aesthetic_score"},
+            "avg_sharpness": {"$avg": "$sharpness"},
+            "avg_exposure": {"$avg": "$exposure_accuracy"},
+            "avg_noise": {"$avg": "$noise_control"}
+        }}
+    ]
+    
+    avg_result = list(db.images.aggregate(pipeline))
+    
+    if avg_result:
+        avg_data = avg_result[0]
+    else:
+        avg_data = {
+            "avg_technical": 0,
+            "avg_aesthetic": 0,
+            "avg_sharpness": 0,
+            "avg_exposure": 0,
+            "avg_noise": 0
+        }
+    
+    recent_images = list(db.images.find(
+        {"user_email": user_email}
+    ).sort("uploaded_at", -1).limit(5))
+    
+    for img in recent_images:
+        img["_id"] = str(img["_id"])
+    
+    return {
+        "total_images": total_images,
+        "blurry_images": blurry_images,
+        "duplicate_images": duplicate_images,
+        "avg_technical_score": round(avg_data.get("avg_technical", 0), 2),
+        "avg_aesthetic_score": round(avg_data.get("avg_aesthetic", 0), 2),
+        "avg_sharpness": round(avg_data.get("avg_sharpness", 0), 2),
+        "avg_exposure": round(avg_data.get("avg_exposure", 0), 2),
+        "avg_noise": round(avg_data.get("avg_noise", 0), 2),
+        "recent_images": recent_images
+    }
+
+
+# ✅ PROFILE ROUTE
+@router.get("/profile")
+async def get_profile(current_user: dict = Depends(verify_token)):
+    user_email = current_user["email"]
+    
+    user_info = db.users.find_one({"email": user_email})
+    
+    total_uploads = db.images.count_documents({"user_email": user_email})
+    
+    pipeline = [
+        {"$match": {"user_email": user_email}},
+        {"$group": {
+            "_id": None,
+            "avg_technical": {"$avg": "$technical_score"},
+            "avg_aesthetic": {"$avg": "$aesthetic_score"}
+        }}
+    ]
+    
+    avg_result = list(db.images.aggregate(pipeline))
+    
+    if avg_result:
+        avg_technical = avg_result[0].get("avg_technical", 0)
+        avg_aesthetic = avg_result[0].get("avg_aesthetic", 0)
+    else:
+        avg_technical = 0
+        avg_aesthetic = 0
+    
+    profile_score = round((avg_technical * 0.4) + (avg_aesthetic * 0.6), 2)
+    
+    if profile_score >= 85:
+        level = "Expert"
+    elif profile_score >= 70:
+        level = "Advanced"
+    elif profile_score >= 50:
+        level = "Intermediate"
+    else:
+        level = "Beginner"
+    
+    high_quality = db.images.count_documents({
+        "user_email": user_email,
+        "technical_score": {"$gte": 70}
+    })
+    
+    medium_quality = db.images.count_documents({
+        "user_email": user_email,
+        "technical_score": {"$gte": 50, "$lt": 70}
+    })
+    
+    low_quality = db.images.count_documents({
+        "user_email": user_email,
+        "technical_score": {"$lt": 50}
+    })
+    
+    return {
+        "name": user_info.get("name", "User"),
+        "email": user_email,
+        "total_uploads": total_uploads,
+        "profile_score": profile_score,
+        "level": level,
+        "avg_technical_score": round(avg_technical, 2),
+        "avg_aesthetic_score": round(avg_aesthetic, 2),
+        "high_quality_count": high_quality,
+        "medium_quality_count": medium_quality,
+        "low_quality_count": low_quality,
+        "member_since": user_info.get("created_at").strftime("%B %Y") if user_info.get("created_at") else "Unknown"
+    }
+
+
+# ✅ BEST ALBUM ROUTE
+@router.get("/best-album")
+async def get_best_album(current_user: dict = Depends(verify_token)):
+    user_email = current_user["email"]
+    
+    top_images = list(db.images.find(
+        {"user_email": user_email}
+    ).sort("aesthetic_score", -1).limit(20))
+    
+    for img in top_images:
+        img["_id"] = str(img["_id"])
+    
+    return {
+        "message": "Best album fetched successfully!",
+        "total_images": len(top_images),
+        "images": top_images
+    }
+
+
+# ✅ GET ALL USER IMAGES
+@router.get("/my-images")
+async def get_my_images(current_user: dict = Depends(verify_token)):
+    user_email = current_user["email"]
+    
+    images = list(db.images.find(
+        {"user_email": user_email}
+    ).sort("uploaded_at", -1))
+    
+    for img in images:
+        img["_id"] = str(img["_id"])
+        if "uploaded_at" in img:
+            img["uploaded_at"] = img["uploaded_at"].isoformat()
+    
+    return {
+        "total": len(images),
+        "images": images
     }
