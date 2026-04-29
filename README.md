@@ -59,6 +59,7 @@ PicPicky/
 │   └── explainability.py        # Score explanations
 │
 ├── frontend/
+|   ├── home.html
 │   ├── login.html
 │   ├── register.html
 │   ├── dashboard.html
