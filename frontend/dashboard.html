@@ -48,11 +48,7 @@
             <div class="flex items-center gap-3">
                 <div>
                     <a href="http://127.0.0.1:5500/frontend/home.html">
-                        <img 
-                        src="PIC-logo.png"
-                        class="h-42 scale-110 w-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
-                        alt="PicPicky Logo"
-                        />
+                        <img src="PIC-logo.png" class="h-42 scale-110 w-auto object-contain cursor-pointer hover:opacity-80 transition-opacity" alt="PicPicky Logo"/>
                     </a>
                 </div>
             </div>
@@ -80,15 +76,10 @@
             </nav>
         </div>
         
-        <!-- Profile Section with Dropdown -->
         <div class="mt-auto p-6">
             <div class="relative">
-                <!-- Clickable Profile Area -->
-                <button
-                    id="profileMenuToggle"
-                    type="button"
-                    class="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-all text-left"
-                >
+                <button id="profileMenuToggle" type="button"
+                    class="w-full flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
                     <div class="w-8 h-8 rounded-full bg-slate-700 border border-white/10 flex items-center justify-center text-white font-bold text-sm" id="avatarInitial"></div>
                     <div class="flex-1 min-w-0">
                         <p id="profileName" class="text-xs font-bold text-white truncate"></p>
@@ -96,25 +87,14 @@
                     </div>
                     <span class="material-symbols-outlined text-slate-500 text-sm">settings</span>
                 </button>
-
-                <!-- Dropdown Menu -->
-                <div
-                    id="profileDropdown"
-                    class="hidden absolute bottom-full left-0 mb-2 w-full rounded-xl border border-white/10 bg-slate-blue-900 shadow-xl overflow-hidden z-50"
-                >
-                    <a
-                        href="profile.html"
-                        class="flex items-center gap-2 px-4 py-3 text-sm text-white hover:bg-white/5 transition-all"
-                    >
+                <div id="profileDropdown"
+                    class="hidden absolute bottom-full left-0 mb-2 w-full rounded-xl border border-white/10 bg-slate-blue-900 shadow-xl overflow-hidden z-50">
+                    <a href="profile.html" class="flex items-center gap-2 px-4 py-3 text-sm text-white hover:bg-white/5 transition-all">
                         <span class="material-symbols-outlined text-base">person</span>
                         Profile
                     </a>
-
-                    <button
-                        id="logoutBtn"
-                        type="button"
-                        class="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-white/5 transition-all text-left"
-                    >
+                    <button id="logoutBtn" type="button"
+                        class="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-400 hover:bg-white/5 transition-all text-left">
                         <span class="material-symbols-outlined text-base">logout</span>
                         Logout
                     </button>
@@ -127,16 +107,14 @@
     <main class="flex-1 flex flex-col overflow-y-auto">
         <div class="max-w-[1600px] mx-auto w-full px-8 py-10">
 
-            <!-- Loading State -->
             <div id="loadingState" class="flex flex-col items-center justify-center py-32 text-slate-400">
                 <span class="material-symbols-outlined text-5xl animate-spin mb-4">refresh</span>
                 <p class="text-sm font-medium">Loading dashboard...</p>
             </div>
 
-            <!-- Dashboard Content -->
             <div id="dashboardContent" class="hidden space-y-8">
 
-                <!-- Top Section: Overview + Gauge + Profiling Note -->
+                <!-- Top Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-sm">
                     <div class="flex flex-col gap-2">
                         <h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Quality Analysis Overview</h2>
@@ -182,8 +160,7 @@
                         <div class="space-y-4">
                             <div>
                                 <div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
-                                    <span>Sharpness</span>
-                                    <span id="sharpnessVal">0%</span>
+                                    <span>Sharpness</span><span id="sharpnessVal">0%</span>
                                 </div>
                                 <div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div id="sharpnessBar" class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 0%"></div>
@@ -191,8 +168,7 @@
                             </div>
                             <div>
                                 <div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
-                                    <span>Exposure Accuracy</span>
-                                    <span id="exposureVal">0%</span>
+                                    <span>Exposure Accuracy</span><span id="exposureVal">0%</span>
                                 </div>
                                 <div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div id="exposureBar" class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 0%"></div>
@@ -200,8 +176,7 @@
                             </div>
                             <div>
                                 <div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
-                                    <span>Noise Control</span>
-                                    <span id="noiseVal">0%</span>
+                                    <span>Noise Control</span><span id="noiseVal">0%</span>
                                 </div>
                                 <div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div id="noiseBar" class="h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
@@ -221,8 +196,7 @@
                         <div class="space-y-4">
                             <div>
                                 <div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
-                                    <span>Average Aesthetic</span>
-                                    <span id="aestheticVal">0%</span>
+                                    <span>Average Aesthetic</span><span id="aestheticVal">0%</span>
                                 </div>
                                 <div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div id="aestheticBar" class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 0%"></div>
@@ -230,8 +204,7 @@
                             </div>
                             <div>
                                 <div class="flex justify-between text-xs font-semibold mb-2 uppercase text-slate-400 tracking-wider">
-                                    <span>Average Technical</span>
-                                    <span id="techScoreVal">0%</span>
+                                    <span>Average Technical</span><span id="techScoreVal">0%</span>
                                 </div>
                                 <div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div id="techScoreBar" class="h-full bg-primary rounded-full transition-all duration-1000" style="width: 0%"></div>
@@ -270,10 +243,8 @@
                     </div>
                 </div>
 
-                <!-- Common Issues + Trend Graph (Side by Side) -->
+                <!-- Common Issues + Trend Graph -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    
-                    <!-- Common Issues Detected -->
                     <div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <h3 class="text-xl font-bold mb-6">Common Issues Detected</h3>
                         <div class="space-y-6">
@@ -301,7 +272,6 @@
                         </div>
                     </div>
 
-                    <!-- Quality Trend Over Time -->
                     <div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="text-xl font-bold">Quality Trend Over Time</h3>
@@ -313,11 +283,9 @@
                                 <line x1="0" y1="15" x2="100" y2="15" stroke="#334155" stroke-width="0.15" stroke-dasharray="2"/>
                                 <line x1="0" y1="25" x2="100" y2="25" stroke="#334155" stroke-width="0.15" stroke-dasharray="2"/>
                                 <line x1="0" y1="35" x2="100" y2="35" stroke="#334155" stroke-width="0.15" stroke-dasharray="2"/>
-                                
                                 <path id="areaFill" d="" fill="url(#trendGrad)"/>
                                 <path id="trendLine" d="" fill="none" stroke="#207fdf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
                                 <g id="dataPoints"></g>
-                                
                                 <defs>
                                     <linearGradient id="trendGrad" x1="0%" x2="0%" y1="0%" y2="100%">
                                         <stop offset="0%" style="stop-color:#207fdf;stop-opacity:0.3"/>
@@ -326,8 +294,7 @@
                                 </defs>
                             </svg>
                         </div>
-                        <div id="chartXLabels" class="flex justify-between mt-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">
-                        </div>
+                        <div id="chartXLabels" class="flex justify-between mt-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1"></div>
                         <div class="mt-4 pt-4 border-t border-slate-700 flex items-center gap-2">
                             <div class="w-3 h-3 bg-primary rounded-full"></div>
                             <span class="text-[10px] text-slate-400 font-bold uppercase">Average Quality Score</span>
@@ -335,7 +302,7 @@
                     </div>
                 </div>
 
-                <!-- Recent Uploads (Full Width Below) -->
+                <!-- Recent Uploads -->
                 <div class="bg-white dark:bg-slate-900/40 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-xl font-bold">Recent Uploads</h3>
@@ -353,6 +320,21 @@
 
 <script>
 const API_BASE = "http://localhost:8000";
+
+// ✅ Fetch decrypted image with auth token → blob URL
+async function loadAuthImage(imageId, imgElement) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`${API_BASE}/image/${imageId}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("Failed");
+        const blob = await response.blob();
+        imgElement.src = URL.createObjectURL(blob);
+    } catch (err) {
+        imgElement.src = "https://via.placeholder.com/56?text=IMG";
+    }
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const userName = localStorage.getItem("userName");
@@ -376,23 +358,19 @@ async function fetchDashboard(token) {
         const response = await fetch(`${API_BASE}/dashboard`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
-
         if (response.status === 401) {
             window.location.href = "login.html";
             return;
         }
-
         const data = await response.json();
         document.getElementById("loadingState").classList.add("hidden");
         document.getElementById("dashboardContent").classList.remove("hidden");
         populateDashboard(data);
-
     } catch (error) {
         console.error("Dashboard error:", error);
         document.getElementById("loadingState").innerHTML = `
             <span class="material-symbols-outlined text-5xl text-red-400 mb-4">error</span>
-            <p class="text-red-400 text-sm font-medium">Failed to load dashboard. Is the server running?</p>
-        `;
+            <p class="text-red-400 text-sm font-medium">Failed to load dashboard. Is the server running?</p>`;
     }
 }
 
@@ -401,37 +379,25 @@ function populateDashboard(data) {
     const blurry = data.blurry_images || 0;
     const duplicates = data.duplicate_images || 0;
     const clean = Math.max(0, total - blurry - duplicates);
-
     const avgTech = data.avg_technical_score || 0;
     const avgAesthetic = data.avg_aesthetic_score || 0;
     const avgSharpness = data.avg_sharpness || 0;
     const avgExposure = data.avg_exposure || 0;
     const avgNoise = data.avg_noise || 0;
+    const globalScore = Math.round((avgTech * 0.4) + (avgAesthetic * 100 * 0.6));
 
-    const globalScore = Math.round((avgTech * 0.4) + (avgAesthetic * 0.6));
-
-    // Gauge Ring
     document.getElementById("globalScore").textContent = globalScore;
     const circumference = 2 * Math.PI * 80;
     const offset = circumference - (circumference * globalScore / 100);
-    setTimeout(() => {
-        document.getElementById("gaugeRing").style.strokeDashoffset = offset;
-    }, 200);
+    setTimeout(() => { document.getElementById("gaugeRing").style.strokeDashoffset = offset; }, 200);
 
-    // Profiling Note
     let note = "";
-    if (globalScore >= 80) {
-        note = "Excellent work! Your images consistently show high technical and aesthetic quality. Keep up the professional standard!";
-    } else if (globalScore >= 60) {
-        note = "Good performance overall. Focus on improving noise control and exposure accuracy to reach the next level.";
-    } else if (globalScore >= 40) {
-        note = "Room for improvement. Consider using a tripod for sharpness and adjusting exposure settings before shooting.";
-    } else {
-        note = "Upload more images to build your quality profile. Each upload helps the AI better understand your photography style.";
-    }
+    if (globalScore >= 80) note = "Excellent work! Your images consistently show high technical and aesthetic quality. Keep up the professional standard!";
+    else if (globalScore >= 60) note = "Good performance overall. Focus on improving noise control and exposure accuracy to reach the next level.";
+    else if (globalScore >= 40) note = "Room for improvement. Consider using a tripod for sharpness and adjusting exposure settings before shooting.";
+    else note = "Upload more images to build your quality profile. Each upload helps the AI better understand your photography style.";
     document.getElementById("profilingNote").textContent = note;
 
-    // Technical Quality
     setBar("sharpnessBar", "sharpnessVal", avgSharpness);
     setBar("exposureBar", "exposureVal", avgExposure);
     setBar("noiseBar", "noiseVal", avgNoise);
@@ -442,13 +408,10 @@ function populateDashboard(data) {
         : "h-full bg-amber-500 rounded-full transition-all duration-1000";
 
     setBadge("techBadge", "techBadgeText", avgTech);
-
-    // Aesthetic
-    setBar("aestheticBar", "aestheticVal", avgAesthetic);
+    setBar("aestheticBar", "aestheticVal", avgAesthetic * 100);
     setBar("techScoreBar", "techScoreVal", avgTech);
-    setBadge("aestheticBadge", "aestheticBadgeText", avgAesthetic);
+    setBadge("aestheticBadge", "aestheticBadgeText", avgAesthetic * 100);
 
-    // Stats
     document.getElementById("totalUploads").textContent = total;
     document.getElementById("blurryCount").textContent = blurry;
     document.getElementById("duplicateCount").textContent = duplicates;
@@ -458,46 +421,30 @@ function populateDashboard(data) {
         document.getElementById("blurryPercent").textContent = `(${Math.round(blurry / total * 100)}%)`;
         document.getElementById("duplicatePercent").textContent = `(${Math.round(duplicates / total * 100)}%)`;
         document.getElementById("cleanPercent").textContent = `(${Math.round(clean / total * 100)}%)`;
+        setIssueBar("issueBlurBar", "issueBlurVal", Math.round(blurry / total * 100));
+        setIssueBar("issueDupBar", "issueDupVal", Math.round(duplicates / total * 100));
+        setIssueBar("issueLowBar", "issueLowVal", Math.round((total - clean) / total * 100));
     }
 
-    // Common Issues
-    if (total > 0) {
-        const blurPercent = Math.round(blurry / total * 100);
-        const dupPercent = Math.round(duplicates / total * 100);
-        const lowQualPercent = Math.round((total - clean) / total * 100);
-
-        setIssueBar("issueBlurBar", "issueBlurVal", blurPercent);
-        setIssueBar("issueDupBar", "issueDupVal", dupPercent);
-        setIssueBar("issueLowBar", "issueLowVal", lowQualPercent);
-    }
-
-    // Recent Uploads
     renderRecentUploads(data.recent_images || []);
-    
-    // Trend Chart - Calculate from recent images
     renderTrendChart(data.recent_images || []);
 }
 
 function setBar(barId, valId, value) {
     const val = Math.round(value || 0);
-    setTimeout(() => {
-        document.getElementById(barId).style.width = `${val}%`;
-    }, 300);
+    setTimeout(() => { document.getElementById(barId).style.width = `${val}%`; }, 300);
     document.getElementById(valId).textContent = `${val}%`;
 }
 
 function setIssueBar(barId, valId, value) {
     const val = Math.round(value || 0);
-    setTimeout(() => {
-        document.getElementById(barId).style.width = `${val}%`;
-    }, 300);
+    setTimeout(() => { document.getElementById(barId).style.width = `${val}%`; }, 300);
     document.getElementById(valId).textContent = `${val}%`;
 }
 
 function setBadge(badgeId, textId, score) {
     const badge = document.getElementById(badgeId);
     const text = document.getElementById(textId);
-
     if (score >= 70) {
         badge.className = "text-emerald-500 flex items-center text-sm font-bold bg-emerald-500/10 px-3 py-1 rounded-full";
         text.textContent = "Good";
@@ -510,6 +457,7 @@ function setBadge(badgeId, textId, score) {
     }
 }
 
+// ✅ Updated: uses loadAuthImage instead of cloudinary_url directly
 function renderRecentUploads(images) {
     const list = document.getElementById("recentList");
 
@@ -518,23 +466,24 @@ function renderRecentUploads(images) {
             <div class="text-center py-8 text-slate-500">
                 <span class="material-symbols-outlined text-4xl mb-2">cloud_upload</span>
                 <p class="text-sm">No uploads yet. <a href="upload.html" class="text-primary hover:underline">Upload now!</a></p>
-            </div>
-        `;
+            </div>`;
         return;
     }
 
     list.innerHTML = images.map(img => {
         const score = Math.round(((img.technical_score || 0) + (img.aesthetic_score || 0)) / 2);
-        const scoreColor = score >= 75 ? "text-green-400" :
-                          score >= 50 ? "text-amber-400" : "text-red-400";
-        const scoreBg = score >= 75 ? "bg-green-500/10" :
-                       score >= 50 ? "bg-amber-500/10" : "bg-red-500/10";
+        const scoreColor = score >= 75 ? "text-green-400" : score >= 50 ? "text-amber-400" : "text-red-400";
+        const scoreBg = score >= 75 ? "bg-green-500/10" : score >= 50 ? "bg-amber-500/10" : "bg-red-500/10";
 
         return `
             <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-800/50 transition-colors">
-                <img src="${img.cloudinary_url}" alt="${img.filename}"
-                     class="w-14 h-14 rounded-lg object-cover border border-white/10"
-                     onerror="this.src='https://via.placeholder.com/56?text=IMG'"/>
+                <div class="relative w-14 h-14 rounded-lg overflow-hidden border border-white/10 bg-slate-700 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-slate-500 text-xl animate-pulse absolute">image</span>
+                    <img id="dash-img-${img._id}"
+                         class="w-14 h-14 object-cover relative"
+                         src="" alt="${img.filename}"
+                         onerror="this.src='https://via.placeholder.com/56?text=IMG'"/>
+                </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-bold text-white truncate">${img.filename}</p>
                     <div class="flex items-center gap-2 mt-1">
@@ -544,53 +493,42 @@ function renderRecentUploads(images) {
                         <span class="text-[10px] text-slate-500">${img.aesthetic_label || ''}</span>
                     </div>
                 </div>
-                <div class="flex flex-col items-center ${scoreBg} px-4 py-2 rounded-lg">
+                <div class="flex flex-col items-center ${scoreBg} px-4 py-2 rounded-lg shrink-0">
                     <span class="${scoreColor} text-xl font-black">${score}</span>
                     <span class="text-[9px] text-slate-500 font-bold uppercase">Score</span>
                 </div>
-            </div>
-        `;
+            </div>`;
     }).join("");
+
+    // ✅ Load each recent image after DOM renders
+    images.forEach(img => {
+        const el = document.getElementById(`dash-img-${img._id}`);
+        if (el) loadAuthImage(img._id, el);
+    });
 }
 
 function renderTrendChart(images) {
     if (!images || images.length === 0) {
-        // Show empty chart with message
         document.getElementById("chartXLabels").innerHTML = '<span class="text-center w-full">Upload images to see trend</span>';
         return;
     }
 
-    // Reverse to show oldest first (left to right)
     const sortedImages = [...images].reverse();
-    
-    const dataPoints = sortedImages.map(img => 
+    const dataPoints = sortedImages.map(img =>
         Math.round(((img.technical_score || 0) + (img.aesthetic_score || 0)) / 2)
     );
-    
     const labels = sortedImages.map((img, i) => `#${i + 1}`);
 
-    const width = 100;
-    const height = 40;
-    const padding = 5;
-
-    // Build path
-    let linePath = "";
-    let areaPath = `M ${padding} ${height - padding}`;
-
+    const width = 100, height = 40, padding = 5;
+    let linePath = "", areaPath = `M ${padding} ${height - padding}`;
     const stepX = dataPoints.length > 1 ? (width - 2 * padding) / (dataPoints.length - 1) : 0;
 
     for (let i = 0; i < dataPoints.length; i++) {
         const x = padding + i * stepX;
         const y = height - padding - ((dataPoints[i] / 100) * (height - 2 * padding));
-
-        if (i === 0) {
-            linePath += `M ${x} ${y}`;
-        } else {
-            linePath += ` L ${x} ${y}`;
-        }
+        linePath += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
         areaPath += ` L ${x} ${y}`;
     }
-
     areaPath += ` L ${width - padding} ${height - padding} Z`;
 
     setTimeout(() => {
@@ -598,39 +536,28 @@ function renderTrendChart(images) {
         document.getElementById("areaFill").setAttribute("d", areaPath);
     }, 200);
 
-    // Render data point dots
     const group = document.getElementById("dataPoints");
     group.innerHTML = "";
-
     for (let i = 0; i < dataPoints.length; i++) {
         const x = padding + i * stepX;
         const y = height - padding - ((dataPoints[i] / 100) * (height - 2 * padding));
-
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", x);
-        circle.setAttribute("cy", y);
-        circle.setAttribute("r", 1.2);
-        circle.setAttribute("fill", "#207fdf");
-        circle.setAttribute("stroke", "#0f1721");
-        circle.setAttribute("stroke-width", "0.5");
-
+        circle.setAttribute("cx", x); circle.setAttribute("cy", y);
+        circle.setAttribute("r", 1.2); circle.setAttribute("fill", "#207fdf");
+        circle.setAttribute("stroke", "#0f1721"); circle.setAttribute("stroke-width", "0.5");
         const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
         title.textContent = `Image #${i + 1}: ${dataPoints[i]} pts`;
         circle.appendChild(title);
-
         group.appendChild(circle);
     }
 
-    // X-axis labels
     document.getElementById("chartXLabels").innerHTML = labels.map(l => `<span>${l}</span>`).join("");
 
-    // Trend Direction
     if (dataPoints.length >= 2) {
         const firstHalf = dataPoints.slice(0, Math.floor(dataPoints.length / 2));
         const secondHalf = dataPoints.slice(Math.floor(dataPoints.length / 2));
         const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
         const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
-        
         const directionEl = document.getElementById("trendDirection");
         if (secondAvg > firstAvg + 2) {
             directionEl.innerHTML = '<span class="text-green-400 flex items-center gap-1"><span class="material-symbols-outlined text-sm">trending_up</span>Improving</span>';
@@ -642,55 +569,32 @@ function renderTrendChart(images) {
     }
 }
 
-// ========================================
-// PROFILE DROPDOWN FUNCTIONALITY
-// ========================================
 const profileMenuToggle = document.getElementById("profileMenuToggle");
 const profileDropdown = document.getElementById("profileDropdown");
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (profileMenuToggle && profileDropdown) {
-    // Toggle dropdown on click
     profileMenuToggle.addEventListener("click", function (e) {
         e.stopPropagation();
         profileDropdown.classList.toggle("hidden");
     });
-
-    // Close dropdown when clicking outside
     document.addEventListener("click", function (e) {
-        if (
-            !profileMenuToggle.contains(e.target) &&
-            !profileDropdown.contains(e.target)
-        ) {
+        if (!profileMenuToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
             profileDropdown.classList.add("hidden");
         }
     });
-
-    // Close dropdown on Escape key
     document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") {
-            profileDropdown.classList.add("hidden");
-        }
+        if (e.key === "Escape") profileDropdown.classList.add("hidden");
     });
 }
 
-// Logout functionality
 if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
-        // Clear stored auth data
-        localStorage.removeItem("token");
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("userEmail");
-
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("access_token");
-        sessionStorage.removeItem("user");
-        sessionStorage.removeItem("userName");
-        sessionStorage.removeItem("userEmail");
-
-        // Redirect to login page
+        localStorage.removeItem("token"); localStorage.removeItem("access_token");
+        localStorage.removeItem("user"); localStorage.removeItem("userName");
+        localStorage.removeItem("userEmail"); sessionStorage.removeItem("token");
+        sessionStorage.removeItem("access_token"); sessionStorage.removeItem("user");
+        sessionStorage.removeItem("userName"); sessionStorage.removeItem("userEmail");
         window.location.href = "login.html";
     });
 }

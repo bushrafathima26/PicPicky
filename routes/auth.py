@@ -9,6 +9,7 @@ from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from config import MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM, MAIL_FROM_NAME, MAIL_PORT, MAIL_SERVER
 from pymongo.errors import ServerSelectionTimeoutError, ConnectionFailure
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from services.encryption import generate_user_key  # ✅ NEW IMPORT
 import secrets
 
 router = APIRouter()
@@ -16,10 +17,8 @@ router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
-# Admin emails
 ADMIN_EMAILS = ["admin1@picpicky.com", "admin2@picpicky.com"]
 
-# Email configuration
 conf = ConnectionConfig(
     MAIL_USERNAME=MAIL_USERNAME,
     MAIL_PASSWORD=MAIL_PASSWORD,
@@ -49,7 +48,6 @@ class ResetPasswordModel(BaseModel):
     token: str
     new_password: str
 
-# --- Token Generator ---
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(
@@ -58,7 +56,6 @@ def create_access_token(data: dict):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-# --- Verify Token ---
 def verify_token(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
@@ -68,13 +65,21 @@ def verify_token(
         email = payload.get("sub")
         if email is None:
             raise HTTPException(status_code=401, detail="Invalid token")
-        return {"email": email}
+        
+        # ✅ Fetch full user from DB so encryption_key is available
+        user = db.users.find_one({"email": email})
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        
+        return {
+            "email": email,
+            "encryption_key": user.get("encryption_key")  # ✅ NEW
+        }
     except JWTError:
         raise HTTPException(
             status_code=401, detail="Invalid or expired token"
         )
 
-# --- Register ---
 @router.post("/register")
 def register(user: RegisterModel):
     try:
@@ -91,7 +96,8 @@ def register(user: RegisterModel):
             "email": user.email,
             "password": hashed_password,
             "created_at": datetime.utcnow(),
-            "status": "active"
+            "status": "active",
+            "encryption_key": generate_user_key()  # ✅ NEW — one key per user
         })
 
         return {"message": "User registered successfully!"}
@@ -114,7 +120,6 @@ def register(user: RegisterModel):
             detail=f"❌ Server error: {str(e)}"
         )
 
-# --- Login ---
 @router.post("/login")
 def login(user: LoginModel):
     try:
@@ -130,8 +135,6 @@ def login(user: LoginModel):
             )
 
         token = create_access_token({"sub": existing_user["email"]})
-
-        # Check if admin
         is_admin = user.email in ADMIN_EMAILS
 
         return {
@@ -160,11 +163,9 @@ def login(user: LoginModel):
             detail=f"❌ Server error: {str(e)}"
         )
 
-# --- Forgot Password ---
 @router.post("/forgot-password")
 async def forgot_password(data: ForgotPasswordModel):
     try:
-        # Check if user exists
         user = db.users.find_one({"email": data.email})
         if not user:
             raise HTTPException(
@@ -172,13 +173,9 @@ async def forgot_password(data: ForgotPasswordModel):
                 detail="No account found with this email"
             )
 
-        # Generate secure reset token
         reset_token = secrets.token_urlsafe(32)
-        
-        # Token expires in 1 hour
         expires_at = datetime.utcnow() + timedelta(hours=1)
 
-        # Store token in database
         db.password_resets.insert_one({
             "email": data.email,
             "token": reset_token,
@@ -187,10 +184,8 @@ async def forgot_password(data: ForgotPasswordModel):
             "created_at": datetime.utcnow()
         })
 
-        # Create reset link
         reset_link = f"http://127.0.0.1:5500/frontend/reset-password.html?token={reset_token}"
 
-        # Email template
         html = f"""
         <!DOCTYPE html>
         <html>
@@ -239,9 +234,6 @@ async def forgot_password(data: ForgotPasswordModel):
                     font-weight: bold;
                     margin: 20px 0;
                 }}
-                .button:hover {{
-                    opacity: 0.9;
-                }}
                 .footer {{
                     margin-top: 30px;
                     padding-top: 20px;
@@ -264,17 +256,13 @@ async def forgot_password(data: ForgotPasswordModel):
                 <h1>Password Reset Request</h1>
                 <p>Hi {user['name']},</p>
                 <p>We received a request to reset your password. Click the button below to create a new password:</p>
-                
                 <a href="{reset_link}" class="button">Reset Password</a>
-                
                 <div class="warning">
                     <p style="margin: 0;"><strong>⚠️ Security Notice:</strong></p>
                     <p style="margin: 8px 0 0 0;">This link expires in 1 hour. If you didn't request this reset, please ignore this email.</p>
                 </div>
-                
                 <p style="color: #8b919e; font-size: 14px;">Or copy and paste this link in your browser:</p>
                 <p style="color: #a5c8ff; word-break: break-all; font-size: 12px;">{reset_link}</p>
-                
                 <div class="footer">
                     <p>© 2024 PicPicky Optical Systems</p>
                     <p>Precision tools for the visionary eye.</p>
@@ -294,8 +282,6 @@ async def forgot_password(data: ForgotPasswordModel):
         fm = FastMail(conf)
         await fm.send_message(message)
 
-        print(f"✅ Email sent to: {data.email} | Reset token: {reset_token}")
-        
         return {
             "message": "Password reset link sent to your email",
             "email": data.email
@@ -309,11 +295,9 @@ async def forgot_password(data: ForgotPasswordModel):
             detail=f"Failed to send email: {str(e)}"
         )
 
-# --- Reset Password ---
 @router.post("/reset-password")
 def reset_password(data: ResetPasswordModel):
     try:
-        # Find the reset token
         reset_request = db.password_resets.find_one({
             "token": data.token,
             "used": False
@@ -325,23 +309,19 @@ def reset_password(data: ResetPasswordModel):
                 detail="Invalid or expired reset link"
             )
 
-        # Check if token expired
         if reset_request["expires_at"] < datetime.utcnow():
             raise HTTPException(
                 status_code=400,
                 detail="Reset link has expired. Please request a new one."
             )
 
-        # Hash new password
         hashed_password = pwd_context.hash(data.new_password[:72])
 
-        # Update user password
         db.users.update_one(
             {"email": reset_request["email"]},
             {"$set": {"password": hashed_password}}
         )
 
-        # Mark token as used
         db.password_resets.update_one(
             {"token": data.token},
             {"$set": {"used": True}}
@@ -356,5 +336,5 @@ def reset_password(data: ResetPasswordModel):
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to reset password: {str(e)}"
+            detail=f"❌ Server error: {str(e)}"
         )

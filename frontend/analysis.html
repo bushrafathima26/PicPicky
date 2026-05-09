@@ -82,7 +82,6 @@
         <!-- Profile Section with Dropdown -->
         <div class="mt-auto p-6">
             <div class="relative">
-                <!-- Clickable Profile Area -->
                 <button
                     id="profileMenuToggle"
                     type="button"
@@ -96,12 +95,11 @@
                     <span class="material-symbols-outlined text-slate-500 text-sm">settings</span>
                 </button>
 
-                <!-- Dropdown Menu -->
                 <div
                     id="profileDropdown"
                     class="hidden absolute bottom-full left-0 mb-2 w-full rounded-xl border border-white/10 bg-slate-blue-900 shadow-xl overflow-hidden z-50"
                 >
-                    <a
+                    
                         href="profile.html"
                         class="flex items-center gap-2 px-4 py-3 text-sm text-white hover:bg-white/5 transition-all"
                     >
@@ -186,10 +184,8 @@
                             Each image receives a <strong class="text-white">Composite Score</strong> displayed in the top-right corner.
                         </p>
                         
-                        <!-- Collapsible Details -->
                         <div id="scoreDetails" class="hidden space-y-3 pt-3 border-t border-white/10">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <!-- Technical Score -->
                                 <div class="bg-slate-800/50 rounded-lg p-4">
                                     <div class="flex items-center gap-2 mb-2">
                                         <span class="material-symbols-outlined text-primary text-sm">engineering</span>
@@ -200,7 +196,6 @@
                                     </p>
                                 </div>
                                 
-                                <!-- Aesthetic Score -->
                                 <div class="bg-slate-800/50 rounded-lg p-4">
                                     <div class="flex items-center gap-2 mb-2">
                                         <span class="material-symbols-outlined text-amber-400 text-sm">palette</span>
@@ -211,7 +206,6 @@
                                     </p>
                                 </div>
                                 
-                                <!-- Composite Score -->
                                 <div class="bg-slate-800/50 rounded-lg p-4 border border-primary/30">
                                     <div class="flex items-center gap-2 mb-2">
                                         <span class="material-symbols-outlined text-emerald-400 text-sm">query_stats</span>
@@ -223,7 +217,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Score Ranges -->
                             <div class="flex items-center gap-6 pt-2">
                                 <p class="text-xs font-bold text-slate-500 uppercase">Score Ranges:</p>
                                 <div class="flex items-center gap-2">
@@ -264,7 +257,7 @@
                 </a>
             </div>
 
-            <!-- Images Container (grouped by date) -->
+            <!-- Images Container -->
             <div id="imagesContainer" class="hidden">
             </div>
 
@@ -394,27 +387,45 @@ let allImages = [];
 let currentFilter = 'all';
 let currentSort = 'date';
 
+// ✅ Helper: Build authenticated image URL via your decrypt route
+function getImageUrl(imageId) {
+    const token = localStorage.getItem("token");
+    // We can't pass auth headers via <img src>, so we use a blob approach
+    return `${API_BASE}/image/${imageId}`;
+}
+
+// ✅ Load image with auth token and return a blob URL (for <img> tags)
+async function loadAuthImage(imageId, imgElement) {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(`${API_BASE}/image/${imageId}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("Failed to load");
+        const blob = await response.blob();
+        imgElement.src = URL.createObjectURL(blob);
+    } catch (err) {
+        imgElement.src = "https://via.placeholder.com/400x500?text=Load+Error";
+    }
+}
+
 // ✅ On Page Load
 document.addEventListener("DOMContentLoaded", function () {
     const userName = localStorage.getItem("userName");
     const userEmail = localStorage.getItem("userEmail");
     const token = localStorage.getItem("token");
 
-    // Redirect if not logged in
     if (!userName || !token) {
         window.location.href = "login.html";
         return;
     }
 
-    // Set sidebar user info
     document.getElementById("profileName").textContent = userName;
     document.getElementById("profileEmail").textContent = userEmail;
     document.getElementById("avatarInitial").textContent = userName.charAt(0).toUpperCase();
 
-    // Fetch images
     fetchImages(token);
 
-    // Search listener
     document.getElementById("searchInput").addEventListener("input", function () {
         renderImages();
     });
@@ -424,9 +435,7 @@ document.addEventListener("DOMContentLoaded", function () {
 async function fetchImages(token) {
     try {
         const response = await fetch(`${API_BASE}/my-images`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            headers: { "Authorization": `Bearer ${token}` }
         });
 
         if (response.status === 401) {
@@ -461,7 +470,6 @@ async function fetchImages(token) {
 function filterImages(type) {
     currentFilter = type;
 
-    // Update active filter button styles
     const buttons = ['filterAll', 'filterBest', 'filterDuplicate', 'filterBlurry'];
     buttons.forEach(id => {
         document.getElementById(id).className =
@@ -505,7 +513,6 @@ function sortImages(type) {
 function renderImages() {
     const searchQuery = document.getElementById("searchInput").value.toLowerCase();
 
-    // Filter
     let filtered = allImages.filter(img => {
         if (currentFilter === 'best') return img.aesthetic_score >= 75 && !img.is_blurry && !img.is_duplicate;
         if (currentFilter === 'duplicate') return img.is_duplicate === true;
@@ -513,14 +520,12 @@ function renderImages() {
         return true;
     });
 
-    // Search
     if (searchQuery) {
         filtered = filtered.filter(img =>
             img.filename.toLowerCase().includes(searchQuery)
         );
     }
 
-    // Sort
     if (currentSort === 'date') {
         filtered.sort((a, b) => new Date(b.uploaded_at) - new Date(a.uploaded_at));
     } else {
@@ -548,7 +553,6 @@ function renderImages() {
         groups[label].push(img);
     });
 
-    // Render
     const container = document.getElementById("imagesContainer");
     container.innerHTML = "";
 
@@ -571,11 +575,17 @@ function renderImages() {
                 ${label}
                 <span class="flex-1 h-px bg-slate-800"></span>
             </h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" id="grid-${label.replace(/\s/g, '-')}">
                 ${groups[label].map(img => createPhotoCard(img)).join("")}
             </div>
         `;
         container.appendChild(section);
+
+        // ✅ Load authenticated images after DOM is ready
+        groups[label].forEach(img => {
+            const imgEl = document.getElementById(`img-${img._id}`);
+            if (imgEl) loadAuthImage(img._id, imgEl);
+        });
     });
 }
 
@@ -585,11 +595,9 @@ function createPhotoCard(img) {
     const techScore = parseFloat((img.technical_score || 0)).toFixed(2);
     const compositeScore = ((parseFloat(score) + parseFloat(techScore)) / 2).toFixed(2);
 
-    // Score color
     const scoreColor = compositeScore >= 75 ? "#207fdf" :
                        compositeScore >= 50 ? "#f59e0b" : "#ef4444";
 
-    // Badges
     let badges = "";
     if (compositeScore >= 85 && !img.is_blurry && !img.is_duplicate) {
         badges += `<span class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter shadow-md">Best</span>`;
@@ -605,17 +613,22 @@ function createPhotoCard(img) {
                    </div>`;
     }
 
-    // Duplicate card style
     const cardClass = img.is_duplicate
         ? "group relative aspect-[4/5] bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-all hover:-translate-y-1 hover:shadow-2xl opacity-60 grayscale hover:grayscale-0 hover:opacity-100 duration-300"
         : "group relative aspect-[4/5] bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-all hover:-translate-y-1 hover:shadow-2xl";
 
     return `
         <div class="${cardClass}">
-            <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                 src="${img.cloudinary_url}"
+            <!-- ✅ Placeholder shown while image loads -->
+            <div class="absolute inset-0 flex items-center justify-center bg-slate-700">
+                <span class="material-symbols-outlined text-slate-500 text-4xl animate-pulse">image</span>
+            </div>
+            <!-- ✅ id used by loadAuthImage to inject blob URL -->
+            <img id="img-${img._id}"
+                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                 src=""
                  alt="${img.filename}"
-                 onerror="this.src='https://via.placeholder.com/400x500?text=Image+Error'"/>
+                 onerror="this.src='https://via.placeholder.com/400x500?text=Error'"/>
 
             <!-- Badges -->
             <div class="absolute top-3 left-3 flex gap-2">${badges}</div>
@@ -645,15 +658,18 @@ function createPhotoCard(img) {
 }
 
 // ✅ Open Modal with Image Details
-function openModal(img) {
+async function openModal(img) {
     document.getElementById("modalFilename").textContent = img.filename;
-    document.getElementById("modalImage").src = img.cloudinary_url;
+    document.getElementById("modalImage").src = "";  // clear first
+
+    // ✅ Load decrypted image into modal too
+    await loadAuthImage(img._id, document.getElementById("modalImage"));
+
     document.getElementById("modalImage").alt = img.filename;
     document.getElementById("modalTechnical").textContent = parseFloat(img.technical_score || 0).toFixed(2);
     document.getElementById("modalAesthetic").textContent = parseFloat(img.aesthetic_score || 0).toFixed(2);
     document.getElementById("modalVerdict").textContent = img.verdict || "No verdict available";
 
-    // Blur / Duplicate flags
     if (img.is_blurry) {
         document.getElementById("modalBlurFlag").classList.remove("hidden");
         document.getElementById("modalBlurFlag").classList.add("flex");
@@ -667,29 +683,27 @@ function openModal(img) {
         document.getElementById("modalDupFlag").classList.add("hidden");
     }
 
-    // Score bars
     setBar("barSharpness", "valSharpness", img.sharpness);
     setBar("barExposure", "valExposure", img.exposure_accuracy);
     setBar("barNoise", "valNoise", img.noise_control);
     setBar("barSaturation", "valSaturation", img.saturation_balance);
     setBar("barContrast", "valContrast", img.contrast_quality);
 
-    // Strengths
     renderList("modalStrengths", "strengthsSection", img.strengths, "text-green-400", "check");
-
-    // Issues
     renderList("modalIssues", "issuesSection", img.issues, "text-red-400", "cancel");
-
-    // Suggestions
     renderList("modalSuggestions", "suggestionsSection", img.suggestions, "text-blue-400", "lightbulb");
 
-    // Show modal
     document.getElementById("imageModal").classList.remove("hidden");
     document.body.style.overflow = "hidden";
 }
 
 // ✅ Close Modal
 function closeModal() {
+    // Revoke blob URL to free memory
+    const modalImg = document.getElementById("modalImage");
+    if (modalImg.src.startsWith("blob:")) URL.revokeObjectURL(modalImg.src);
+    modalImg.src = "";
+
     document.getElementById("imageModal").classList.add("hidden");
     document.body.style.overflow = "";
 }
@@ -746,13 +760,11 @@ const profileDropdown = document.getElementById("profileDropdown");
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (profileMenuToggle && profileDropdown) {
-    // Toggle dropdown on click
     profileMenuToggle.addEventListener("click", function (e) {
         e.stopPropagation();
         profileDropdown.classList.toggle("hidden");
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener("click", function (e) {
         if (
             !profileMenuToggle.contains(e.target) &&
@@ -762,7 +774,6 @@ if (profileMenuToggle && profileDropdown) {
         }
     });
 
-    // Close dropdown on Escape key
     document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
             profileDropdown.classList.add("hidden");
@@ -770,23 +781,18 @@ if (profileMenuToggle && profileDropdown) {
     });
 }
 
-// Logout functionality
 if (logoutBtn) {
     logoutBtn.addEventListener("click", function () {
-        // Clear stored auth data
         localStorage.removeItem("token");
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
         localStorage.removeItem("userName");
         localStorage.removeItem("userEmail");
-
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("access_token");
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("userName");
         sessionStorage.removeItem("userEmail");
-
-        // Redirect to login page
         window.location.href = "login.html";
     });
 }

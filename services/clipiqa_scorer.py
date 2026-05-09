@@ -1,4 +1,15 @@
 """CLIP-IQA Aesthetic Quality Scorer."""
+
+# ✅ Patch for Python 3.12+ compatibility — pkgutil.ImpImporter was removed
+import pkgutil
+if not hasattr(pkgutil, 'ImpImporter'):
+    class _FakeImpImporter:
+        def __init__(self, path=None):
+            self.path = path
+        def find_module(self, fullname, path=None):
+            return None
+    pkgutil.ImpImporter = _FakeImpImporter
+
 import torch
 import pyiqa
 import numpy as np

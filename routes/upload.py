@@ -1,4 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from fastapi.responses import StreamingResponse
 from typing import List
 import cloudinary
 import cloudinary.uploader
@@ -10,8 +11,11 @@ from services.duplicate_detection import check_duplicate
 from services.technical_quality import analyze_technical_quality
 from services.clipiqa_scorer import predict_aesthetic_score
 from services.explainability import generate_explanation
+from services.encryption import encrypt_image, decrypt_image
 
 from PIL import Image
+from bson import ObjectId
+import requests
 import io
 import pillow_heif
 
@@ -23,7 +27,6 @@ def process_image(contents, filename):
     filename_lower = filename.lower()
     
     try:
-        # Handle HEIC/HEIF
         if filename_lower.endswith(('.heic', '.heif')):
             heif_file = pillow_heif.read_heif(io.BytesIO(contents))
             pil_image = Image.frombytes(
@@ -37,16 +40,13 @@ def process_image(contents, filename):
         else:
             pil_image = Image.open(io.BytesIO(contents))
         
-        # Convert to RGB
         if pil_image.mode != 'RGB':
             pil_image = pil_image.convert('RGB')
         
-        # Resize if very large
         max_dimension = 4096
         if max(pil_image.size) > max_dimension:
             pil_image.thumbnail((max_dimension, max_dimension), Image.LANCZOS)
         
-        # Compress to JPEG - reduce quality until under 10MB
         quality = 90
         while quality >= 30:
             output_buffer = io.BytesIO()
@@ -79,10 +79,9 @@ async def upload_images(
 
     contents = await file.read()
     
-    # Process & compress image
     processed_contents = process_image(contents, file.filename)
 
-    # ML Pipeline
+    # ✅ Run ALL analysis BEFORE encrypting
     blur_result = detect_blur(processed_contents)
     technical_result = analyze_technical_quality(processed_contents)
     aesthetic_result = predict_aesthetic_score(processed_contents)
@@ -103,11 +102,17 @@ async def upload_images(
         "aesthetic_score": aesthetic_result["aesthetic_score"]
     })
 
-    # Upload compressed image to Cloudinary
+    # ✅ Encrypt AFTER analysis, BEFORE uploading to Cloudinary
+    user_record = db.users.find_one({"email": current_user["email"]})
+    if not user_record or not user_record.get("encryption_key"):
+        raise HTTPException(status_code=500, detail="Encryption key not found for user.")
+    
+    encrypted_contents = encrypt_image(processed_contents, user_record["encryption_key"])
+
     result = cloudinary.uploader.upload(
-        processed_contents,
+        io.BytesIO(encrypted_contents),
         folder="picpicky/uploads",
-        resource_type="image"
+        resource_type="raw"
     )
 
     image_doc = {
@@ -159,6 +164,42 @@ async def upload_images(
         "issues": explanation["issues"],
         "suggestions": explanation["suggestions"]
     }
+
+
+# ✅ DECRYPT & SERVE IMAGE ROUTE
+@router.get("/image/{image_id}")
+async def get_image(image_id: str, current_user: dict = Depends(verify_token)):
+    if not ObjectId.is_valid(image_id):
+        raise HTTPException(status_code=400, detail="Invalid image ID format.")
+
+    image_doc = db.images.find_one({
+        "_id": ObjectId(image_id),
+        "user_email": current_user["email"]
+    })
+
+    if not image_doc:
+        raise HTTPException(status_code=404, detail="Image not found or access denied.")
+
+    user_record = db.users.find_one({"email": current_user["email"]})
+    if not user_record or not user_record.get("encryption_key"):
+        raise HTTPException(status_code=500, detail="Encryption key not found for user.")
+
+    try:
+        response = requests.get(image_doc["cloudinary_url"], timeout=10)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        raise HTTPException(status_code=502, detail=f"Failed to fetch image from storage: {str(e)}")
+
+    try:
+        decrypted_bytes = decrypt_image(response.content, user_record["encryption_key"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to decrypt image: {str(e)}")
+
+    return StreamingResponse(
+        io.BytesIO(decrypted_bytes),
+        media_type="image/jpeg",
+        headers={"Cache-Control": "private, max-age=3600"}
+    )
 
 
 # ✅ DASHBOARD ROUTE
@@ -291,22 +332,38 @@ async def get_profile(current_user: dict = Depends(verify_token)):
     }
 
 
-# ✅ BEST ALBUM ROUTE
+# ✅ BEST ALBUM ROUTE — technical_score > 80 AND aesthetic_score > 0.6
 @router.get("/best-album")
 async def get_best_album(current_user: dict = Depends(verify_token)):
     user_email = current_user["email"]
-    
+
     top_images = list(db.images.find(
-        {"user_email": user_email}
+        {
+            "user_email": user_email,
+            "technical_score": {"$gt": 80},
+            "aesthetic_score": {"$gt": 0.6},   # ← changed from 0.7 to 0.6
+            "is_blurry": False,
+            "is_duplicate": False
+        }
     ).sort("aesthetic_score", -1).limit(20))
-    
-    for img in top_images:
+
+    duplicate_images = list(db.images.find(
+        {"user_email": user_email, "is_duplicate": True}
+    ).sort("uploaded_at", -1).limit(10))
+
+    blurry_images = list(db.images.find(
+        {"user_email": user_email, "is_blurry": True}
+    ).sort("uploaded_at", -1).limit(10))
+
+    all_images = top_images + duplicate_images + blurry_images
+
+    for img in all_images:
         img["_id"] = str(img["_id"])
-    
+
     return {
         "message": "Best album fetched successfully!",
         "total_images": len(top_images),
-        "images": top_images
+        "images": all_images
     }
 
 
